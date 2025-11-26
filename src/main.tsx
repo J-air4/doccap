@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import ClinicalNarrativeBuilder from '../ClinicalNarrativeBuilder_v3.1_INTEGRATED';
+import ClinicalNarrativeBuilder from './ClinicalNarrativeBuilder_v3.1_INTEGRATED';
+import './index.css';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const container = document.getElementById('root');
+if (!container) throw new Error('Root element not found');
+
+ReactDOM.createRoot(container).render(
   <React.StrictMode>
     <ClinicalNarrativeBuilder />
   </React.StrictMode>

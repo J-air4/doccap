@@ -11,8 +11,8 @@
  */
 
 // Main Application Component
-export { default } from './ClinicalNarrativeBuilder_v3.1_INTEGRATED';
-export { default as ClinicalNarrativeBuilder } from './ClinicalNarrativeBuilder_v3.1_INTEGRATED';
+export { default } from './ClinicalNarrativeBuilder';
+export { default as ClinicalNarrativeBuilder } from './ClinicalNarrativeBuilder';
 
 // Tag Library Functions
 export {

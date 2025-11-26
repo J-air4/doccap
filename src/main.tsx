@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import ClinicalNarrativeBuilder from './ClinicalNarrativeBuilder_v3.1_INTEGRATED';
+import ClinicalNarrativeBuilder from './ClinicalNarrativeBuilder';
 import './index.css';
 
 const container = document.getElementById('root');

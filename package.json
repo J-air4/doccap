@@ -1,0 +1,33 @@
+{
+  "name": "clinical-narrative-builder",
+  "version": "3.1.0",
+  "description": "Clinical Narrative Builder with contextual filtering for occupational therapy documentation",
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "dev": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "lucide-react": "^0.263.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "occupational-therapy",
+    "clinical-documentation",
+    "healthcare",
+    "EMR",
+    "narrative-generation",
+    "contextual-filtering"
+  ],
+  "author": "Jare",
+  "license": "PROPRIETARY"
+}

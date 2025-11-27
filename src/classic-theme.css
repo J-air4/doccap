@@ -1,0 +1,316 @@
+/* Classic Windows 95/XP Theme Styles */
+
+.classic-theme {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Window Styling */
+.classic-theme .app-window {
+  background-color: #f0f0f0;
+  border: 1px solid #a0a0a0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+.classic-theme .window-title-bar {
+  background: linear-gradient(to right, #0058a8, #0078d7);
+  color: white;
+  padding: 8px 12px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Buttons */
+.classic-theme .app-button {
+  background-color: #e1e1e1;
+  border: 1px solid #adadad;
+  border-radius: 4px;
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.classic-theme .app-button:hover {
+  background-color: #e5f1fb;
+  border-color: #0078d7;
+}
+
+.classic-theme .app-button:active {
+  background-color: #cce4f7;
+  border-color: #005a9e;
+}
+
+.classic-theme .app-button:disabled {
+  background-color: #d4d4d4;
+  color: #a0a0a0;
+  border-color: #c0c0c0;
+  cursor: not-allowed;
+}
+
+.classic-theme .app-button-primary {
+  background: linear-gradient(to bottom, #0078d7, #005a9e);
+  color: white;
+  border-color: #004578;
+  font-weight: bold;
+}
+
+.classic-theme .app-button-primary:hover {
+  background: linear-gradient(to bottom, #1084d0, #0066b3);
+}
+
+/* Modal Window */
+.classic-theme .modal-window {
+  background-color: #f0f0f0;
+  border: 1px solid #a0a0a0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  max-width: 600px;
+  width: 90%;
+}
+
+.classic-theme .modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.classic-theme .modal-option {
+  color: #0000ee;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 8px 12px;
+  display: block;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+}
+
+.classic-theme .modal-option:hover {
+  background-color: #e5f1fb;
+  text-decoration: none;
+}
+
+.classic-theme .modal-option-selected {
+  background-color: #cce4f7 !important;
+  border: 2px solid #005a9e;
+  font-weight: bold;
+  color: #111;
+  text-decoration: none;
+}
+
+/* Duration Input */
+.classic-theme .duration-input {
+  background-color: #fff;
+  border: 2px solid #0078d7;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  width: 140px;
+  transition: all 0.2s;
+}
+
+.classic-theme .duration-input:focus {
+  outline: none;
+  border-color: #005a9e;
+  box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.2);
+}
+
+/* Billing Guide */
+.classic-theme .billing-guide {
+  background: linear-gradient(135deg, #fff3cd, #fef9e7);
+  border: 1px solid #d1b550;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* Quick Phrase Buttons */
+.classic-theme .phrase-btn {
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.4;
+  min-height: 60px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.classic-theme .phrase-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.classic-theme .phrase-btn-favorite {
+  border: 2px solid;
+  font-weight: 500;
+}
+
+.classic-theme .phrase-btn-recent {
+  background-color: #f5f5f5;
+  border: 1px solid #999;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* Medical Necessity Checklist */
+.classic-theme .medical-necessity-banner {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  border: 1px solid #2196f3;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+  color: #0d47a1;
+}
+
+.classic-theme .necessity-checkbox {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.classic-theme .necessity-checkbox:hover {
+  background-color: #f5f5f5;
+}
+
+.classic-theme .necessity-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+/* Narrative Area */
+.classic-theme .narrative-textarea {
+  background-color: #ffffff;
+  border: 2px inset #7f9db9;
+  border-radius: 4px;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 200px;
+}
+
+.classic-theme .narrative-textarea:focus {
+  outline: none;
+  border-color: #0078d7;
+}
+
+/* Preview Panel */
+.classic-theme .modal-preview {
+  font-family: 'Courier New', monospace;
+  background-color: #ffffff;
+  border: 2px inset #7f9db9;
+  padding: 12px;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  min-height: 80px;
+  max-height: 120px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+/* Saved Narratives */
+.classic-theme .saved-narrative-item {
+  background-color: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+}
+
+.classic-theme .saved-narrative-item:hover {
+  border-color: #0078d7;
+  background-color: #f8f8f8;
+}
+
+/* Banners */
+.classic-theme .compliance-banner {
+  background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+  border: 1px solid #7abaaf;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0c5460;
+}
+
+.classic-theme .warning-banner {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border: 1px solid #d39e00;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 12px 0;
+  font-size: 0.9rem;
+  color: #856404;
+}
+
+.classic-theme .recommendation-box {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border: 1px solid #28a745;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 12px 0;
+  color: #155724;
+}
+
+/* Section Headers */
+.classic-theme .modal-subtitle {
+  font-weight: bold;
+  color: #111;
+  margin-top: 16px;
+  border-bottom: 1px solid #a0a0a0;
+  padding-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.classic-theme .modal-subtitle:first-child {
+  margin-top: 0;
+}
+
+/* Scrollbars */
+.classic-theme *::-webkit-scrollbar {
+  width: 16px;
+}
+
+.classic-theme *::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border: 1px solid #a0a0a0;
+}
+
+.classic-theme *::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border: 1px solid #a0a0a0;
+  border-radius: 2px;
+}
+
+.classic-theme *::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}

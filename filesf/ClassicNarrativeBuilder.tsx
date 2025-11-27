@@ -230,7 +230,7 @@ export default function ClassicNarrativeBuilder() {
 
             {/* Quick Access Phrases */}
             <PhraseButtons onInsert={(phrase) => {
-              const newText = state.generatedText + ' ' + phrase;
+              const newText = [state.generatedText, phrase].filter(Boolean).join(' ');
               dispatch({ type: 'GENERATE_TEXT', payload: newText });
             }} />
           </div>

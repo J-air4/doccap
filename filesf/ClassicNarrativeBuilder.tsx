@@ -77,7 +77,7 @@ function reducer(state: State, action: Action): State {
       return { ...state, narrative: { ...state.narrative, ...action.payload } };
     case 'SAVE_NARRATIVE': {
       const newNarrative: SavedNarrative = {
-        id: `narrative-${Date.now()}`,
+        id: `narrative-${Date.now()}-${Math.random().toString(36).slice(2)}`,
         date: new Date().toLocaleDateString(),
         duration: state.narrative.duration,
         text: state.generatedText,

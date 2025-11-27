@@ -7,6 +7,7 @@ import { TAGGED_CUEING_PURPOSES } from './taggedCueingPurposes';
 import { TAGGED_IMPAIRMENTS } from './taggedImpairments';
 import { TAGGED_GOALS } from './taggedGoals';
 import { calculateRelevanceScore, filterByRelevance } from './tagLibrary';
+import SelectionModal from './components/SelectionModal';
 
 /**
  * Clinical Narrative Builder v4.0 - REDESIGNED UI
@@ -427,6 +428,7 @@ export default function ClinicalNarrativeBuilderV2() {
   const [savedSessions, setSavedSessions] = useState<Session[]>([]);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [activeStep, setActiveStep] = useState(0); // 0: CPT/Category, 1: Details, 2: Cueing
+  const [activeModal, setActiveModal] = useState<'category' | 'goal' | 'impairment' | 'cueingPurpose' | null>(null);
 
   // Get current activity tags for contextual filtering
   const getCurrentActivityTags = (): string[] => {
@@ -702,15 +704,16 @@ export default function ClinicalNarrativeBuilderV2() {
                   {currentIntervention.cptCode && (
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">Category</label>
-                      <SearchableSelect
-                        value={currentIntervention.category || ''}
-                        onChange={(value) => {
-                          setCurrentIntervention({...currentIntervention, category: value, activities: []});
-                          setActiveStep(1);
-                        }}
-                        options={(CLINICAL_DATA.CATEGORIES[currentIntervention.cptCode as keyof typeof CLINICAL_DATA.CATEGORIES] || []).map(c => ({ value: c }))}
-                        placeholder="Search categories..."
-                      />
+                      <button
+                        type="button"
+                        onClick={() => setActiveModal('category')}
+                        className="w-full px-4 py-3 text-left bg-white border-2 border-slate-300 hover:border-blue-400 rounded-lg flex items-center justify-between transition-all group"
+                      >
+                        <span className={currentIntervention.category ? 'text-slate-900 font-medium' : 'text-slate-400'}>
+                          {currentIntervention.category || 'Tap to select category...'}
+                        </span>
+                        <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                      </button>
                     </div>
                   )}
                 </>
@@ -750,31 +753,32 @@ export default function ClinicalNarrativeBuilderV2() {
                     <label className="block text-sm font-medium text-slate-700 mb-2">
                       Goal {suggestedGoals.length > 0 && <span className="text-blue-500 text-xs ml-1">✨ Smart suggestions</span>}
                     </label>
-                    {suggestedGoals.length > 0 ? (
-                      <div className="space-y-2">
-                        <div className="flex flex-wrap gap-1.5">
-                          {suggestedGoals.slice(0, 6).map(({ item }, i) => (
-                            <button
-                              key={i}
-                              type="button"
-                              onClick={() => setCurrentIntervention({...currentIntervention, goal: item.value})}
-                              className={`px-2 py-1 text-xs rounded-full border transition-all
-                                ${currentIntervention.goal === item.value
-                                  ? 'bg-blue-600 text-white border-blue-600'
-                                  : 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'}`}
-                            >
-                              {item.value}
-                            </button>
-                          ))}
-                        </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveModal('goal')}
+                      className="w-full px-4 py-3 text-left bg-white border-2 border-slate-300 hover:border-blue-400 rounded-lg flex items-center justify-between transition-all group"
+                    >
+                      <span className={currentIntervention.goal ? 'text-slate-900 font-medium' : 'text-slate-400'}>
+                        {currentIntervention.goal || 'Tap to select goal...'}
+                      </span>
+                      <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                    </button>
+                    {suggestedGoals.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {suggestedGoals.slice(0, 6).map(({ item }, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => setCurrentIntervention({...currentIntervention, goal: item.value})}
+                            className={`px-2 py-1 text-xs rounded-full border transition-all
+                              ${currentIntervention.goal === item.value
+                                ? 'bg-blue-600 text-white border-blue-600'
+                                : 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'}`}
+                          >
+                            {item.value}
+                          </button>
+                        ))}
                       </div>
-                    ) : (
-                      <SearchableSelect
-                        value={currentIntervention.goal || ''}
-                        onChange={(value) => setCurrentIntervention({...currentIntervention, goal: value})}
-                        options={TAGGED_GOALS.map(g => ({ value: g.value }))}
-                        placeholder="Search goals..."
-                      />
                     )}
                   </div>
 
@@ -868,8 +872,18 @@ export default function ClinicalNarrativeBuilderV2() {
                     <label className="block text-sm font-medium text-slate-700 mb-2">
                       Impairment (2/2) {suggestedImpairments.length > 0 && <span className="text-blue-500 text-xs ml-1">✨</span>}
                     </label>
-                    {suggestedImpairments.length > 0 ? (
-                      <div className="flex flex-wrap gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setActiveModal('impairment')}
+                      className="w-full px-4 py-3 text-left bg-white border-2 border-slate-300 hover:border-purple-400 rounded-lg flex items-center justify-between transition-all group"
+                    >
+                      <span className={currentIntervention.impairment ? 'text-slate-900 font-medium' : 'text-slate-400'}>
+                        {currentIntervention.impairment || 'Tap to select impairment...'}
+                      </span>
+                      <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-purple-500 transition-colors" />
+                    </button>
+                    {suggestedImpairments.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
                         {suggestedImpairments.slice(0, 6).map(({ item }, i) => (
                           <button
                             key={i}
@@ -884,13 +898,6 @@ export default function ClinicalNarrativeBuilderV2() {
                           </button>
                         ))}
                       </div>
-                    ) : (
-                      <SearchableSelect
-                        value={currentIntervention.impairment || ''}
-                        onChange={(value) => setCurrentIntervention({...currentIntervention, impairment: value})}
-                        options={TAGGED_IMPAIRMENTS.map(i => ({ value: i.value }))}
-                        placeholder="Search impairments..."
-                      />
                     )}
                   </div>
 
@@ -993,6 +1000,62 @@ export default function ClinicalNarrativeBuilderV2() {
           </div>
         </div>
       </div>
+
+      {/* MODALS */}
+
+      {/* Category Selection Modal */}
+      <SelectionModal
+        isOpen={activeModal === 'category'}
+        onClose={() => setActiveModal(null)}
+        title="Select Category"
+        contextText={currentIntervention.cptCode ? `For CPT ${currentIntervention.cptCode}` : undefined}
+        options={CLINICAL_DATA.CATEGORIES[currentIntervention.cptCode as keyof typeof CLINICAL_DATA.CATEGORIES] || []}
+        currentValue={currentIntervention.category}
+        onSelect={(value) => {
+          setCurrentIntervention({...currentIntervention, category: value, activities: []});
+          setActiveStep(1);
+        }}
+        colorTheme="blue"
+      />
+
+      {/* Goal Selection Modal */}
+      <SelectionModal
+        isOpen={activeModal === 'goal'}
+        onClose={() => setActiveModal(null)}
+        title="Select Goal"
+        contextText={currentIntervention.category ? `For ${currentIntervention.category}` : undefined}
+        options={TAGGED_GOALS.map(g => ({ value: g.value, tags: g.tags }))}
+        suggestedOptions={suggestedGoals.map(({ item }) => ({ value: item.value, tags: item.tags }))}
+        currentValue={currentIntervention.goal}
+        onSelect={(value) => setCurrentIntervention({...currentIntervention, goal: value})}
+        colorTheme="blue"
+      />
+
+      {/* Impairment Selection Modal */}
+      <SelectionModal
+        isOpen={activeModal === 'impairment'}
+        onClose={() => setActiveModal(null)}
+        title="Select Impairment"
+        contextText={currentIntervention.category ? `For ${currentIntervention.category}` : undefined}
+        options={TAGGED_IMPAIRMENTS.map(i => ({ value: i.value, tags: i.tags }))}
+        suggestedOptions={suggestedImpairments.map(({ item }) => ({ value: item.value, tags: item.tags }))}
+        currentValue={currentIntervention.impairment}
+        onSelect={(value) => setCurrentIntervention({...currentIntervention, impairment: value})}
+        colorTheme="purple"
+      />
+
+      {/* Cueing Purpose Selection Modal */}
+      <SelectionModal
+        isOpen={activeModal === 'cueingPurpose'}
+        onClose={() => setActiveModal(null)}
+        title="Select Cueing Purpose"
+        contextText={currentIntervention.category ? `For ${currentIntervention.category}` : undefined}
+        options={TAGGED_CUEING_PURPOSES.map(cp => ({ value: cp.value, tags: cp.tags }))}
+        suggestedOptions={suggestedCueingPurposes.map(({ item }) => ({ value: item.value, tags: item.tags }))}
+        currentValue={currentIntervention.cueingPurpose}
+        onSelect={(value) => setCurrentIntervention({...currentIntervention, cueingPurpose: value})}
+        colorTheme="emerald"
+      />
     </div>
   );
 }

@@ -1,5 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { X, Search, Sparkles, Check } from 'lucide-react';
+
+// Constants
+const FOCUS_DELAY_MS = 100;
+const DEFAULT_VISIBLE_OPTIONS = 8;
 
 interface OptionItem {
   value: string;
@@ -33,11 +37,13 @@ export default function SelectionModal({
   const [searchQuery, setSearchQuery] = useState('');
   const [showAll, setShowAll] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   // Focus search on open
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => searchInputRef.current?.focus(), 100);
+      setTimeout(() => searchInputRef.current?.focus(), FOCUS_DELAY_MS);
       setSearchQuery('');
       setShowAll(false);
     }
@@ -53,7 +59,7 @@ export default function SelectionModal({
     return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen]);
 
-  // Keyboard shortcuts
+  // Keyboard shortcuts and focus trap
   useEffect(() => {
     if (!isOpen) return;
 
@@ -61,6 +67,35 @@ export default function SelectionModal({
       if (e.key === 'Escape') {
         e.preventDefault();
         onClose();
+      }
+
+      // Focus trap: Handle Tab key to keep focus within modal
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+
+        if (focusableElements.length === 0) {
+          e.preventDefault();
+          return;
+        }
+
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+        if (e.shiftKey) {
+          // Shift + Tab
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement?.focus();
+          }
+        } else {
+          // Tab
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement?.focus();
+          }
+        }
       }
     };
 
@@ -75,21 +110,27 @@ export default function SelectionModal({
     return typeof item === 'string' ? { value: item } : item;
   };
 
-  // Filter logic
-  const allNormalized = options.map(normalize);
-  const suggestionsNormalized = suggestedOptions.map(normalize);
+  // Filter logic with memoization
+  const allNormalized = useMemo(() => options.map(normalize), [options]);
+  const suggestionsNormalized = useMemo(() => suggestedOptions.map(normalize), [suggestedOptions]);
 
   // Remove suggestions from the "All" list to avoid duplicates in view
-  const suggestedValues = new Set(suggestionsNormalized.map(s => s.value));
+  const suggestedValues = useMemo(
+    () => new Set(suggestionsNormalized.map(s => s.value)),
+    [suggestionsNormalized]
+  );
 
-  const filteredOptions = allNormalized.filter(opt => {
-    const matchesSearch = opt.value.toLowerCase().includes(searchQuery.toLowerCase());
-    const isAlreadySuggested = suggestedValues.has(opt.value);
+  const filteredOptions = useMemo(() => {
+    const lowerCaseSearchQuery = searchQuery.toLowerCase();
+    return allNormalized.filter(opt => {
+      const matchesSearch = opt.value.toLowerCase().includes(lowerCaseSearchQuery);
+      const isAlreadySuggested = suggestedValues.has(opt.value);
 
-    // If searching, show everything matching. If not searching, hide suggestions from "all" list
-    if (searchQuery) return matchesSearch;
-    return !isAlreadySuggested;
-  });
+      // If searching, show everything matching. If not searching, hide suggestions from "all" list
+      if (searchQuery) return matchesSearch;
+      return !isAlreadySuggested;
+    });
+  }, [allNormalized, suggestedValues, searchQuery]);
 
   const handleSelect = (val: string) => {
     onSelect(val);
@@ -105,25 +146,44 @@ export default function SelectionModal({
   }[colorTheme];
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-slate-50 md:bg-black/50 md:backdrop-blur-sm transition-all duration-200">
+    <div
+      className="fixed inset-0 z-50 flex flex-col bg-slate-50 md:bg-black/50 md:backdrop-blur-sm transition-all duration-200"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      aria-describedby={contextText ? "modal-context" : undefined}
+    >
 
       {/* Modal Container */}
-      <div className="flex-1 flex flex-col w-full h-full md:h-[90vh] md:w-[800px] md:m-auto md:rounded-2xl md:shadow-2xl bg-slate-50 overflow-hidden relative animate-in fade-in slide-in-from-bottom-4 duration-300">
+      <div
+        ref={modalRef}
+        className="flex-1 flex flex-col w-full h-full md:h-[90vh] md:w-[800px] md:m-auto md:rounded-2xl md:shadow-2xl bg-slate-50 overflow-hidden relative animate-in fade-in slide-in-from-bottom-4 duration-300"
+      >
 
         {/* Header */}
         <div className="bg-white border-b px-4 py-4 md:px-6 md:py-5 flex-none z-10">
           <div className="flex items-start justify-between mb-4">
             <div>
               {contextText && (
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                <p
+                  id="modal-context"
+                  className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1"
+                >
                   {contextText}
                 </p>
               )}
-              <h2 className="text-xl md:text-2xl font-bold text-slate-800">{title}</h2>
+              <h2
+                id="modal-title"
+                className="text-xl md:text-2xl font-bold text-slate-800"
+              >
+                {title}
+              </h2>
             </div>
             <button
+              ref={closeButtonRef}
               onClick={onClose}
               className="p-2 -mr-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+              aria-label="Close modal"
             >
               <X className="w-6 h-6" />
             </button>
@@ -190,7 +250,7 @@ export default function SelectionModal({
                 {searchQuery ? 'Search Results' : 'All Options'}
               </div>
               {/* Toggle to show huge lists if not searching */}
-              {!searchQuery && !showAll && filteredOptions.length > 8 && (
+              {!searchQuery && !showAll && filteredOptions.length > DEFAULT_VISIBLE_OPTIONS && (
                 <button
                   onClick={() => setShowAll(true)}
                   className={`text-sm font-medium ${themeStyles.text} hover:underline`}
@@ -201,7 +261,7 @@ export default function SelectionModal({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-              {(showAll || searchQuery ? filteredOptions : filteredOptions.slice(0, 8)).map((opt, idx) => (
+              {(showAll || searchQuery ? filteredOptions : filteredOptions.slice(0, DEFAULT_VISIBLE_OPTIONS)).map((opt, idx) => (
                 <button
                   key={`all-${idx}`}
                   onClick={() => handleSelect(opt.value)}
@@ -221,12 +281,12 @@ export default function SelectionModal({
               ))}
             </div>
 
-            {!searchQuery && !showAll && filteredOptions.length > 8 && (
+            {!searchQuery && !showAll && filteredOptions.length > DEFAULT_VISIBLE_OPTIONS && (
               <button
                 onClick={() => setShowAll(true)}
                 className="w-full py-3 mt-2 text-sm font-medium text-slate-500 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors"
               >
-                View {filteredOptions.length - 8} more options...
+                View {filteredOptions.length - DEFAULT_VISIBLE_OPTIONS} more options...
               </button>
             )}
 

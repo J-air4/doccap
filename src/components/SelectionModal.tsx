@@ -74,6 +74,12 @@ export default function SelectionModal({
         const focusableElements = modalRef.current.querySelectorAll(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
+
+        if (focusableElements.length === 0) {
+          e.preventDefault();
+          return;
+        }
+
         const firstElement = focusableElements[0] as HTMLElement;
         const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
 
@@ -115,8 +121,9 @@ export default function SelectionModal({
   );
 
   const filteredOptions = useMemo(() => {
+    const lowerCaseSearchQuery = searchQuery.toLowerCase();
     return allNormalized.filter(opt => {
-      const matchesSearch = opt.value.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = opt.value.toLowerCase().includes(lowerCaseSearchQuery);
       const isAlreadySuggested = suggestedValues.has(opt.value);
 
       // If searching, show everything matching. If not searching, hide suggestions from "all" list

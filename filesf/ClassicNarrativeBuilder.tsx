@@ -112,9 +112,15 @@ export default function ClassicNarrativeBuilder() {
 
   // Load saved narratives on mount
   useEffect(() => {
-    const saved = localStorage.getItem('classic-narratives');
-    if (saved) {
-      dispatch({ type: 'LOAD_SAVED', payload: JSON.parse(saved) });
+    try {
+      const saved = localStorage.getItem('classic-narratives');
+      if (saved) {
+        dispatch({ type: 'LOAD_SAVED', payload: JSON.parse(saved) });
+      }
+    } catch (error) {
+      console.error('Failed to parse saved narratives from localStorage:', error);
+      // Optionally, clear the corrupted data
+      localStorage.removeItem('classic-narratives');
     }
   }, []);
 

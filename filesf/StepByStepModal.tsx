@@ -167,7 +167,7 @@ export default function StepByStepModal({
                   key={cpt.code}
                   onClick={() => {
                     onUpdateNarrative({ cptCode: cpt.code });
-                    handleNext();
+                    onNextStep('category');
                   }}
                   className={`p-6 rounded-lg border-2 transition-all text-left ${
                     narrative.cptCode === cpt.code
